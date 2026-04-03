@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-import psycopg2
-import psycopg2.extras
+import psycopg
 import os
 from datetime import datetime
 
@@ -9,7 +8,7 @@ app = Flask(__name__)
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg.connect(DATABASE_URL)
     return conn
 
 def init_db():
@@ -30,7 +29,7 @@ def init_db():
 @app.route("/")
 def index():
     conn = get_db()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur = conn.cursor(row_factory=psycopg.rows.dict_row)
     cur.execute("SELECT * FROM notes ORDER BY created_at DESC")
     notes = cur.fetchall()
     cur.close()

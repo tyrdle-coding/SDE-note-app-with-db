@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <header>
+    <h1>Notes App</h1>
+    <span>your personal notebook</span>
+  </header>
+
+  <div class="container">
+
+    <form class="add-form" action="/add" method="POST">
+      <label class="form-label" for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="Give your note a title…" autocomplete="off">
+
+      <label class="form-label" for="content">Note</label>
+      <textarea id="content" name="content" placeholder="Write here…" required></textarea>
+
+      <button class="btn-add" type="submit">+ Add Note</button>
+    </form>
+
+    {% if notes %}
+      <div class="section-label">{{ notes|length }} note{{ 's' if notes|length != 1 }}</div>
+      <div class="notes-grid">
+        {% for note in notes %}
+        <div class="note-card">
+          <div class="note-title">{{ note.title }}</div>
+          <div class="note-content">{{ note.content }}</div>
+          <div class="note-footer">
+            <span class="note-date">
+              {{ note.created_at.strftime('%Y-%m-%d') }}
+            </span>
+            <form action="/delete/{{ note.id }}" method="POST" style="display:inline">
+              <button class="btn-delete" type="submit" onclick="return confirm('Delete this note?')">delete</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <span class="empty-icon">📓</span>
+        <p>No notes yet — write your first one above.</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>
